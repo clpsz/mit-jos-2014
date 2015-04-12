@@ -1,5 +1,5 @@
 #调试设置
-这个练习需要使用gdb调试器来跟踪程序运行， make之后，工程中已经生成了gdb的设置文件.gdbinit（根据.gdbinit.tmpl生成）。
+这个练习需要使用gdb调试器来跟踪程序运行，make之后，工程中已经生成了gdb的设置文件.gdbinit（根据.gdbinit.tmpl生成）。
 打开配置文件可以发现它做了三项设置：
 - 设置target连接到qemu
 - 设置处理器芯片为8086
@@ -11,6 +11,7 @@ add-auto-load-safe-path /path/to/project/2014-jos/.gdbinit
 
 #启动调试
 开两个终端窗口，一个运行make qemu-gdb，另一个运行gdb，即可进入gdb调试，gdb会自动调用.gdbinit进行配置。
+(也可以直接在工程目录中运行make gdb，则不需要设置.gdbinit也可以)
 
 进入gdb后，在gdb命令行中输入info r可以看到当前的寄存器情况，可以看到:
 ```
@@ -47,10 +48,11 @@ cs             0xf000	61440
    0xfe07b:	push   %edi
    0xfe07d:	push   %esi
 ```
-可以通过以下命令将指令输出到文件中：
+可以通过以下命令将指令输出到文件中(项目默认设置是输出到gdb.txt中的)：
 ```
-(gdb) set logging on
+(gdb) set logging off
 (gdb) set logging /path/to/file
+(gdb) set logging on
 ```
 下面是通过此文件获取到前100条指令：
 ```
