@@ -30,3 +30,7 @@
 
 # Debug files
 *.dSYM/
+
+# my elf file and vim session file
+_main
+_vs
