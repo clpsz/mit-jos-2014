@@ -54,7 +54,7 @@ Breakpoint 1, 0x00100025 in ?? ()
 ```
 
 #不开启分页的错误分析
-在0x100025处中断后stepi单步执行：
+注释掉movl    %eax, %cr0,再编译运行，在0x100025处中断后stepi单步执行：
 ```
 (gdb) b *0x100025
 Breakpoint 1 at 0x100025
@@ -67,7 +67,7 @@ Breakpoint 1, 0x00100025 in ?? ()
 (gdb) stepi
 => 0x10002a:    jmp    *%eax
 0x0010002a in ?? ()
-(gdb) 
+(gdb) stepi
 => 0xf010002c <relocated>:  add    %al,(%eax)
 relocated () at kern/entry.S:74
 74      movl    $0x0,%ebp           # nuke frame pointer
