@@ -39,6 +39,11 @@ i386_init(void)
     Lab1_exercise8_3:
         cprintf("x %d, y %x, z %d\n", x, y, z);
     }
+    {
+        unsigned int i = 0x000a646c;
+    Lab1_exercise8_4:
+        cprintf("H%x Wor%s", 57616, &i);
+    }
 
 	// Test the stack backtrace function (lab 1 only)
 	test_backtrace(5);
