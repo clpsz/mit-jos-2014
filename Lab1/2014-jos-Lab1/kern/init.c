@@ -38,6 +38,8 @@ i386_init(void)
         int x = 1, y = 3, z = 4;
     Lab1_exercise8_3:
         cprintf("x %d, y %x, z %d\n", x, y, z);
+    Lab1_exercise8_5:
+        cprintf("x=%d y=%d", 3);
     }
     {
         unsigned int i = 0x000a646c;
