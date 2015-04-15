@@ -1,0 +1,106 @@
+diff --git a/Lab1/2014-jos-Lab1/kern/init.c b/Lab1/2014-jos-Lab1/kern/init.c
+index e73b3c2..b75d3e6 100644
+--- a/Lab1/2014-jos-Lab1/kern/init.c
++++ b/Lab1/2014-jos-Lab1/kern/init.c
+@@ -34,6 +34,18 @@ i386_init(void)
+ 	cons_init();
+ 
+ 	cprintf("6828 decimal is %o octal!\n", 6828);
++    {
++        int x = 1, y = 3, z = 4;
++    Lab1_exercise8_3:
++        cprintf("x %d, y %x, z %d\n", x, y, z);
++    Lab1_exercise8_5:
++        cprintf("x=%d y=%d", 3);
++    }
++    {
++        unsigned int i = 0x000a646c;
++    Lab1_exercise8_4:
++        cprintf("H%x Wor%s", 57616, &i);
++    }
+ 
+ 	// Test the stack backtrace function (lab 1 only)
+ 	test_backtrace(5);
+diff --git a/Lab1/2014-jos-Lab1/kern/kdebug.c b/Lab1/2014-jos-Lab1/kern/kdebug.c
+old mode 100644
+new mode 100755
+index 9547143..185efb4
+--- a/Lab1/2014-jos-Lab1/kern/kdebug.c
++++ b/Lab1/2014-jos-Lab1/kern/kdebug.c
+@@ -180,6 +180,13 @@ debuginfo_eip(uintptr_t addr, struct Eipdebuginfo *info)
+ 	//	which one.
+ 	// Your code here.
+ 
++    stab_binsearch(stabs, &lline, &rline, N_SLINE, addr);
++    if (lline <= rline) {
++        info->eip_line = stabs[lline].n_desc;
++    }
++    else {
++        cprintf("line not find\n");
++    }
+ 
+ 	// Search backwards from the line number for the relevant filename
+ 	// stab.
+diff --git a/Lab1/2014-jos-Lab1/kern/monitor.c b/Lab1/2014-jos-Lab1/kern/monitor.c
+index f8a934a..399506f 100644
+--- a/Lab1/2014-jos-Lab1/kern/monitor.c
++++ b/Lab1/2014-jos-Lab1/kern/monitor.c
+@@ -24,6 +24,7 @@ struct Command {
+ static struct Command commands[] = {
+ 	{ "help", "Display this list of commands", mon_help },
+ 	{ "kerninfo", "Display information about the kernel", mon_kerninfo },
++	{ "backtrace", "Display backtrace info", mon_backtrace },
+ };
+ #define NCOMMANDS (sizeof(commands)/sizeof(commands[0]))
+ 
+@@ -58,8 +59,25 @@ mon_kerninfo(int argc, char **argv, struct Trapframe *tf)
+ int
+ mon_backtrace(int argc, char **argv, struct Trapframe *tf)
+ {
+-	// Your code here.
+-	return 0;
++    uint32_t ebp, eip, *p;
++    struct Eipdebuginfo info;
++
++    ebp = read_ebp();
++    while (ebp != 0)
++    {
++        p = (uint32_t *) ebp;
++        eip = p[1];
++        cprintf("ebp %x eip %x args %08x %08x %08x %08x %08x\n", ebp, eip, p[2], p[3], p[4], p[5], p[6]);
++        if (debuginfo_eip(eip, &info) == 0)
++        {
++            int fn_offset = eip - info.eip_fn_addr;
++
++            cprintf("%s:%d: %.*s+%d\n", info.eip_file, info.eip_line, info.eip_fn_namelen, info.eip_fn_name, fn_offset);
++        }
++        ebp = p[0];
++    }
++    
++    return 0;
+ }
+ 
+ 
+diff --git a/Lab1/2014-jos-Lab1/lib/printfmt.c b/Lab1/2014-jos-Lab1/lib/printfmt.c
+index 28e01c9..d34c60d 100644
+--- a/Lab1/2014-jos-Lab1/lib/printfmt.c
++++ b/Lab1/2014-jos-Lab1/lib/printfmt.c
+@@ -205,11 +205,13 @@ vprintfmt(void (*putch)(int, void*), void *putdat, const char *fmt, va_list ap)
+ 
+ 		// (unsigned) octal
+ 		case 'o':
+-			// Replace this with your code.
+-			putch('X', putdat);
+-			putch('X', putdat);
+-			putch('X', putdat);
+-			break;
++			num = getint(&ap, lflag);
++			if ((long long) num < 0) {
++				putch('-', putdat);
++				num = -(long long) num;
++			}
++			base = 8;
++			goto number;
+ 
+ 		// pointer
+ 		case 'p':
