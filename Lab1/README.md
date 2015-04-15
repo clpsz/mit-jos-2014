@@ -28,3 +28,7 @@ $make gdb
 $make grade
 ```
 会自动编译内核，运行，并查看是否满足Lab要求，修改代码后建议运行一下看是否正确
+
+#参考
+
+[MIT 6.828 Lab1](http://pdosnew.csail.mit.edu/6.828/2014/labs/lab1/)
