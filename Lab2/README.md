@@ -11,5 +11,5 @@ $git checkout -b lab2 origin/lab2
 
 
 #参考
-[MIT6.826 2014 Lab2](http://pdosnew.csail.mit.edu/6.828/2014/labs/lab2/)
+[MIT 6.828 Lab2](http://pdosnew.csail.mit.edu/6.828/2014/labs/lab2/)
 
