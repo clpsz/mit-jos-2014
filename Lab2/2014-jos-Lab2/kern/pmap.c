@@ -458,7 +458,7 @@ boot_map_region(pde_t *pgdir, uintptr_t va, size_t size, physaddr_t pa, int perm
     size_t i, np;
 
     np = size/PGSIZE;
-    
+    // can't use va+size as upper bound, may overflow    
     for (i = 0; i < np; i++)
     {
         pte = pgdir_walk(pgdir, (void *)pva, 1);
