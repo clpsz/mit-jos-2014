@@ -175,8 +175,7 @@ mem_init(void)
 	//    - pages itself -- kernel RW, user NONE
 	// Your code goes here:
 	
-    // boot_map_region(pde_t *pgdir, uintptr_t va, size_t size, physaddr_t pa, int perm)
-    boot_map_region(kern_pgdir, 
+   boot_map_region(kern_pgdir, 
                     UPAGES, 
                     ROUNDUP((sizeof(struct PageInfo)*npages), PGSIZE),
                     PADDR(pages), 
@@ -209,7 +208,7 @@ mem_init(void)
 	// Your code goes here:
     boot_map_region(kern_pgdir, 
                     KERNBASE, 
-                    ROUNDUP((0xFFFFFFFF-KERNBASE), PGSIZE),                                                                                                                                              
+                    ROUNDUP((0xFFFFFFFF-KERNBASE), PGSIZE),
                     0, 
                     (PTE_W | PTE_P));
 
