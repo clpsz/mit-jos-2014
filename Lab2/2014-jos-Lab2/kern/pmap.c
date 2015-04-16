@@ -440,17 +440,23 @@ boot_map_region(pde_t *pgdir, uintptr_t va, size_t size, physaddr_t pa, int perm
     uintptr_t pva = va;
     physaddr_t ppa = pa;
     pte_t *pte;
+    size_t i, np;
 
-    for (; pva < va+size; pva+=PGSIZE, ppa+=PGSIZE)
+    np = size/PGSIZE;
+    
+    for (i = 0; i < np; i++)
     {
         pte = pgdir_walk(pgdir, (void *)pva, 1);
         if (!pte)
         {
             return;
         }
-        *pte = PTE_ADDR(ppa) | perm | PTE_P;
+        *pte = PTE_ADDR(ppa) | perm;
+        pva+=PGSIZE;
+        ppa+=PGSIZE;
     }
 }
+
 
 //
 // Map the physical page 'pp' at virtual address 'va'.
