@@ -154,6 +154,13 @@ mem_init(void)
     memset(pages, 0, sizeof(struct PageInfo)*npages);
 
 	//////////////////////////////////////////////////////////////////////
+	// Make 'envs' point to an array of size 'NENV' of 'struct Env'.
+	// LAB 3: Your code here.
+
+	envs = (struct Env*)boot_alloc(sizeof(struct Env)*NENV);
+	memset(envs, 0, sizeof(struct Env)*NENV);
+
+	//////////////////////////////////////////////////////////////////////
 	// Now that we've allocated the initial kernel data structures, we set
 	// up the list of free physical pages. Once we've done so, all further
 	// memory management will go through the page_* functions. In
@@ -212,6 +219,19 @@ mem_init(void)
                     ROUNDUP((0xFFFFFFFF-KERNBASE), PGSIZE),
                     0, 
                     (PTE_W | PTE_P));
+
+	//////////////////////////////////////////////////////////////////////
+	// Map 'envs' read-only by the user at linear address UENVS
+	// Permissions:
+	//    - the new image at UPAGES -- kernel R, user R
+	//      (ie. perm = PTE_U | PTE_P)
+	//    - pages itself -- kernel RW, user NONE
+    boot_map_region(kern_pgdir, 
+                    UENVS, 
+                    ROUNDUP((sizeof(struct Env)*NENV), PGSIZE),
+                    PADDR(envs), 
+                    (PTE_U | PTE_P));
+
 
 	// Check that the initial page directory has been set up correctly.
 	check_kern_pgdir();
