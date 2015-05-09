@@ -45,3 +45,30 @@ struct Trapframe {
 进入中断入口之后，如果该中断没有错误码，则压入一个0以保持TrapFrame的致，接着是压入中断号方便后面trap_dispatch函数处理不同的中断。因为可能要更改代码段和数据段描述符，所以将es和ds也压入堆栈。最后是调用pushal压入当前的寄存器值。
 
 读代码的时候需要注意的是堆栈的增长方向是从大地址到小地址，而结构体的field从上到下是从小地址到大地址。因此最先压入堆栈的是结构体中的最后一个字段。且压栈和出栈都是以4个字节为一个块进入操作的，对于不足4字节的数据，会被填充。
+
+中断入口的代码如下：
+```
+#define TRAPHANDLER_NOEC(name, num)					\
+	.globl name;							\
+	.type name, @function;						\
+	.align 2;							\
+	name:								\
+	pushl $0;							\
+	pushl $(num);							\
+	jmp _alltraps
+
+...
+
+.globl _alltraps
+_alltraps:
+pushl %ds                                                                                  
+pushl %es
+pushal
+
+movw $GD_KD, %ax
+movw %ax, %ds
+movw %ax, %es
+
+pushl %esp  /* trap(%esp) */
+call trap
+```
