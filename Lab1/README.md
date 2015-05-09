@@ -29,6 +29,9 @@ $make grade
 ```
 会自动编译内核，运行，并查看是否满足Lab要求，修改代码后建议运行一下看是否正确
 
+#注意
+JOS的代码中用TAB来处理对齐，如果使用IDE，需要将TAB长度设为8个空格方能获得更好的对齐效果。
+
 #参考
 
 [MIT 6.828 Lab1](http://pdosnew.csail.mit.edu/6.828/2014/labs/lab1/)
