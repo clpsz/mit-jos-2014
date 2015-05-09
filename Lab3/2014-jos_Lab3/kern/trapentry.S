@@ -47,9 +47,46 @@
  * Lab 3: Your code here for generating entry points for the different traps.
  */
 
+/*
+clpsz:
+please visit here to find a summary of all exceptions
+http://wiki.osdev.org/Exceptions
+*/
+TRAPHANDLER_NOEC(handler0, T_DIVIDE)
+TRAPHANDLER_NOEC(handler1, T_DEBUG)
+TRAPHANDLER_NOEC(handler2, T_NMI)
+TRAPHANDLER_NOEC(handler3, T_BRKPT)
+TRAPHANDLER_NOEC(handler4, T_OFLOW)
+TRAPHANDLER_NOEC(handler5, T_BOUND)
+TRAPHANDLER_NOEC(handler6, T_ILLOP)
+TRAPHANDLER_NOEC(handler7, T_DEVICE)
+TRAPHANDLER(handler8, T_DBLFLT)
+TRAPHANDLER_NOEC(handler9, T_COPROC) /* reserved */
+TRAPHANDLER(handler10, T_TSS)
+TRAPHANDLER(handler11, T_SEGNP)
+TRAPHANDLER(handler12, T_STACK)
+TRAPHANDLER(handler13, T_GPFLT)
+TRAPHANDLER(handler14, T_PGFLT)
+TRAPHANDLER_NOEC(handler15, T_RES)  /* reserved */
+TRAPHANDLER_NOEC(handler16, T_FPERR)
+TRAPHANDLER(handler17, T_ALIGN)
+TRAPHANDLER_NOEC(handler18, T_MCHK)
+TRAPHANDLER_NOEC(handler19, T_SIMDERR)
 
 
 /*
  * Lab 3: Your code here for _alltraps
  */
+.globl _alltraps
+_alltraps:
+pushl %ds                                                                                  
+pushl %es
+pushal
+
+movw $GD_KD, %ax
+movw %ax, %ds
+movw %ax, %es
+
+pushl %esp  /* trap(%esp) */
+call trap
 
