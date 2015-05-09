@@ -1,6 +1,7 @@
 #结论
 在这个练习中定义了一系列中断入口函数，用好JOS提供的宏可以轻松完成这些工作。
 
+1. 使用宏TRAPHANDLER和TRAPHANDLER_NOEC定义一系列中断入口地址。
 1. 因为要切换到内核代码，所以需要将ES和DS设置成内核的ES和DS。
 2. 使用pushal命令来压入中断调用帧(trapframe)，然后将这栈中的这个帧的地址传给函数trap。
 3. 在trap_init中需要设置IDT。
