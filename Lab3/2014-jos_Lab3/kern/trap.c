@@ -86,6 +86,8 @@ trap_init(void)
     void handler18();
     void handler19();
 
+    void handler_syscall();
+
 
     SETGATE(idt[0], 0, GD_KT, handler0, 0);
     SETGATE(idt[1], 0, GD_KT, handler1, 0);
@@ -107,6 +109,8 @@ trap_init(void)
     SETGATE(idt[17], 0, GD_KT, handler17, 0);
     SETGATE(idt[18], 0, GD_KT, handler18, 0);
     SETGATE(idt[19], 0, GD_KT, handler19, 0);
+
+    SETGATE(idt[T_SYSCALL], 0, GD_KT, handler_syscall, 3);
 
 
 	// Per-CPU setup 
@@ -186,6 +190,7 @@ trap_dispatch(struct Trapframe *tf)
 {
 	// Handle processor exceptions.
 	// LAB 3: Your code here.
+    int syscall_ret;
 
     if (tf->tf_trapno == T_PGFLT)
     {
@@ -195,6 +200,17 @@ trap_dispatch(struct Trapframe *tf)
     else if (tf->tf_trapno == T_BRKPT)
     {
         monitor(tf);
+        return;
+    }
+    else if (tf->tf_trapno == T_SYSCALL)
+    {
+        syscall_ret = syscall(tf->tf_regs.reg_eax, 
+            tf->tf_regs.reg_edx, 
+            tf->tf_regs.reg_ecx, 
+            tf->tf_regs.reg_ebx, 
+            tf->tf_regs.reg_edi, 
+            tf->tf_regs.reg_esi);
+        tf->tf_regs.reg_eax = syscall_ret;
         return;
     }
 	// Unexpected trap: The user process or the kernel has a bug.
