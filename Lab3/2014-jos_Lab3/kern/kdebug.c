@@ -149,14 +149,14 @@ debuginfo_eip(uintptr_t addr, struct Eipdebuginfo *info)
         }
 
 		stabs = usd->stabs;
-		stab_end = usd->stab_end + 1;
+		stab_end = usd->stab_end;
 		stabstr = usd->stabstr;
-		stabstr_end = usd->stabstr_end + 1;
+		stabstr_end = usd->stabstr_end;
 
 		// Make sure the STABS and string table memory is valid.
 		// LAB 3: Your code here.
-        stablen = stab_end - stabs - 1;
-        strlen = stabstr_end - stabstr - 1;
+        stablen = stab_end - stabs + 1;
+        strlen = stabstr_end - stabstr + 1;
         if (user_mem_check(curenv, stabs, stablen, PTE_U) < 0)
         {
             return -1;
