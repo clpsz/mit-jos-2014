@@ -116,6 +116,7 @@ debuginfo_eip(uintptr_t addr, struct Eipdebuginfo *info)
 	const struct Stab *stabs, *stab_end;
 	const char *stabstr, *stabstr_end;
 	int lfile, rfile, lfun, rfun, lline, rline;
+    size_t stablen, strlen;
 
 	// Initialize *info
 	info->eip_file = "<unknown>";
@@ -142,14 +143,28 @@ debuginfo_eip(uintptr_t addr, struct Eipdebuginfo *info)
 		// Make sure this memory is valid.
 		// Return -1 if it is not.  Hint: Call user_mem_check.
 		// LAB 3: Your code here.
+        if (user_mem_check(curenv, usd, sizeof(struct UserStabData), PTE_U) < 0)
+        {
+            return -1;
+        }
 
 		stabs = usd->stabs;
-		stab_end = usd->stab_end;
+		stab_end = usd->stab_end + 1;
 		stabstr = usd->stabstr;
-		stabstr_end = usd->stabstr_end;
+		stabstr_end = usd->stabstr_end + 1;
 
 		// Make sure the STABS and string table memory is valid.
 		// LAB 3: Your code here.
+        stablen = stab_end - stabs - 1;
+        strlen = stabstr_end - stabstr - 1;
+        if (user_mem_check(curenv, stabs, stablen, PTE_U) < 0)
+        {
+            return -1;
+        }
+        if (user_mem_check(curenv, stabstr, strlen, PTE_U) < 0)
+        {
+            return -1;
+        }
 	}
 
 	// String table validity checks
@@ -204,6 +219,7 @@ debuginfo_eip(uintptr_t addr, struct Eipdebuginfo *info)
 	//	Look at the STABS documentation and <inc/stab.h> to find
 	//	which one.
 	// Your code here.
+
 
 
 	// Search backwards from the line number for the relevant filename
