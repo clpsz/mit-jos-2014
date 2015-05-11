@@ -81,7 +81,7 @@ i386_init(void)
 // While boot_aps is booting a given CPU, it communicates the per-core
 // stack pointer that should be loaded by mpentry.S to that CPU in
 // this variable.
-void *mpentry_kstack;
+volatile void *mpentry_kstack;
 
 // Start the non-boot (AP) processors.
 static void
