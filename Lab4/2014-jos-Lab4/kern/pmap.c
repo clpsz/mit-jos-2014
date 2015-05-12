@@ -337,9 +337,15 @@ page_init(void)
     // Mark page 0 as in use
     pages[0].pp_ref = 1;
 
+    pages[MPENTRY_PADDR/PGSIZE].pp_ref = 1;
+
     // Mark base memory as free
 	for (i = 1; i < npages_basemem; i++)
 	{
+        if (i == MPENTRY_PADDR/PGSIZE)
+        {
+                continue;
+        }
 	    pages[i].pp_ref = 0;
 	    pages[i].pp_link = page_free_list;
 	    page_free_list = &pages[i];
@@ -683,7 +689,21 @@ mmio_map_region(physaddr_t pa, size_t size)
 	// Hint: The staff solution uses boot_map_region.
 	//
 	// Your code here:
-	panic("mmio_map_region not implemented");
+	// panic("mmio_map_region not implemented");
+    uintptr_t ret = base;
+    size = ROUNDUP(size, PGSIZE);
+
+    if (base + size > MMIOLIM) {
+        panic("mmio_map_region overflow MMIOLIM");
+    }
+
+    boot_map_region(kern_pgdir, 
+                    base, 
+                    size,
+                    pa,
+                    PTE_PCD | PTE_PWT | PTE_W);
+    base += size;
+    return (void *)ret;
 }
 
 static uintptr_t user_mem_check_addr;
