@@ -370,9 +370,15 @@ page_init(void)
     {
         pages[i].pp_ref = 1;
     }
+
+    pages[MPENTRY_PADDR/PGSIZE].pp_ref = 1;
     // mark others as free
     for (i = first_free_page; i < npages; i++)
     {
+        if (i == MPENTRY_PADDR/PGSIZE)
+        {
+                continue;
+        }
         pages[i].pp_ref = 0;
         pages[i].pp_link = page_free_list;
 	    page_free_list = &pages[i];
