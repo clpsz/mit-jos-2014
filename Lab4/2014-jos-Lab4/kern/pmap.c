@@ -862,6 +862,8 @@ check_page_free_list(bool only_low_memory)
 
 	assert(nfree_basemem > 0);
 	assert(nfree_extmem > 0);
+	
+	cprintf("check_page_free_list() succeeded!\n");
 }
 
 //
